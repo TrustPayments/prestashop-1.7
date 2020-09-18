@@ -1,0 +1,68 @@
+/**
+ * Trust Payments Prestashop
+ *
+ * This Prestashop module enables to process payments with Trust Payments (https://www.trustpayments.com/).
+ *
+ * @author customweb GmbH (http://www.customweb.com/)
+ * @copyright 2017 - 2020 customweb GmbH
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache Software License (ASL 2.0)
+ */
+#trustpayments_manual_notif_wrapper div {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#trustpayments_manual_notif .icon-bullhorn {
+    color: #6c868e;
+    font-size: 22px;
+    vertical-align: middle;
+}
+
+.main-header>.component.trustpayments-component {
+    margin-left: 5px;
+    margin-left: .3125rem;
+    margin-right: 5px;
+    margin-right: .3125rem;
+}
+
+.trustpayments-component>ul {
+    padding: 0;
+    margin: 0;
+}
+
+.trustpayments-component, .trustpayments-component>ul,
+    .trustpayments-component>ul>li {
+    display: flex !important;
+    align-items: stretch;
+}
+
+.trustpayments-component>ul>li>a {
+    display: flex;
+    align-items: center;
+}
+
+.trustpayments-icon-bullhorn-svg {
+    display: none;
+}
+
+.trustpayments-component .trustpayments-icon-bullhorn-svg
+    {
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+.trustpayments-component #trustpayments_manual_notif .trustpayments_manual_notif::after
+    {
+    display: none;
+}
+
+.trustpayments-component #trustpayments_manual_notif_number_wrapper
+    {
+    display: none;
+}
+
+.bootstrap #header_infos #trustpayments_manual_notif .dropdown-menu {
+    transform: translate3d(-200px, 20px, 0px) !important;
+    top: 20px !important;
+}
