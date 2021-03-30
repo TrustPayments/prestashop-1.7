@@ -143,7 +143,7 @@ class TrustPaymentsOrderModuleFrontController extends ModuleFrontController
 
         if (! $this->module instanceof TrustPayments) {
             $this->context->cookie->tru_error = $this->module->l(
-                'There was a techincal issue, please try again.',
+                'There was a technical issue, please try again.',
                 'order'
             );
             return $this->context->link->getPageLink('order', true, null);

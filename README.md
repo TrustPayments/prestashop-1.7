@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/TrustPayments/prestashop-1.7.svg?branch=master)](https://travis-ci.org/TrustPayments/prestashop-1.7)
 
+> This plugin supports the Trust Enterprise Platform which can be identified by the URL for the platform ep.trustpayments.com.
+
 # PrestaShop 1.7 Trust Payments Integration
 This repository contains the PrestaShop Trust Payments payment module that enables the shop to process payments with [Trust Payments](https://www.trustpayments.com/).
 
@@ -13,7 +15,7 @@ This repository contains the PrestaShop Trust Payments payment module that enabl
 
 ## Documentation
 
-* [English](https://plugin-documentation.ep.trustpayments.com/TrustPayments/prestashop-1.7/1.2.1/docs/en/documentation.html)
+* [English](https://plugin-documentation.ep.trustpayments.com/TrustPayments/prestashop-1.7/1.2.2/docs/en/documentation.html)
 
 ## Support
 
@@ -21,7 +23,7 @@ Support queries can be issued on the [Trust Payments support site](https://www.t
 
 ## License
 
-Please see the [license file](https://github.com/TrustPayments/prestashop-1.7/blob/1.2.1/LICENSE) for more information.
+Please see the [license file](https://github.com/TrustPayments/prestashop-1.7/blob/1.2.2/LICENSE) for more information.
 
 ## Other PrestaShop Versions
 
