@@ -33,10 +33,11 @@ jQuery(function ($) {
             $(".trustpayments-method-data").each(function (key, element) {
                 var infoId = $(element).closest('div.additional-information').attr('id');
                 var psId = infoId.substring(0, infoId.indexOf('-additional-information'));
-                $("#"+psId+"-container").children('label').children('img').addClass("trustpayments-image");
-                $("#"+psId+"-container").addClass('trustpayments-payment-option');
+                var psContainer = $('#'+psId+'-container');
+                psContainer.children('label').children('img').addClass('trustpayments-image');
+                psContainer.addClass('trustpayments-payment-option');
                 var fee = $(element).closest("div.additional-information").find(".trustpayments-payment-fee");
-                $("#"+psId+"-container").children("label").append(fee);
+                psContainer.children("label").append(fee);
                 $("#"+psId).data("trustpayments-method-id", $(element).data("method-id")).data("trustpayments-configuration-id", $(element).data("configuration-id"));
             });
         },
@@ -65,16 +66,16 @@ jQuery(function ($) {
             var self = event.data.self;
             var current_method = self.get_selected_payment_method();
             var postData;
-            if (current_method.data("module-name") == "trustpayments") {
+            if (current_method.data('module-name') === 'trustpayments') {
                 postData = "methodId="+current_method.data("trustpayments-method-id");
             }
             $.ajax({
-                type: "POST",
+                type: 'POST',
                 url: trustPaymentsCheckoutUrl,
                 data: postData,
                 dataType: "json",
                 success:  function (response, textStatus, jqXHR) {
-                    if ( response.result == 'success') {
+                    if ( response.result === 'success') {
                         $("#js-checkout-summary").fadeOut("slow", function () {
                             var div = $(response.preview).hide();
                             $(this).replaceWith(div);
@@ -96,7 +97,7 @@ jQuery(function ($) {
                     return;
                 }
             });
-            if (current_method.data("module-name") == "trustpayments") {
+            if (current_method.data('module-name') === 'trustpayments') {
                 self.register_method(current_method.data("trustpayments-method-id"), current_method.data("trustpayments-configuration-id"), "trustpayments-"+current_method.data("trustpayments-method-id"));
             }
             
@@ -154,7 +155,6 @@ jQuery(function ($) {
         process_validation : function (method_id, validation_result) {
             if (validation_result.success) {
                 this.create_order(method_id);
-                return;
             } else {
                 $('#payment-confirmation button').attr('disabled', false);
                 this.hide_loading_spinner();
@@ -164,26 +164,26 @@ jQuery(function ($) {
         },
         
         create_order : function (method_id) {
-            var form = $("#trustpayments-"+method_id).closest("form.trustpayments-payment-form");
-            var self = this
+            var form = $('#trustpayments-'+method_id).closest('form.trustpayments-payment-form');
+            var self = this;
             $.ajax({
                 type:       'POST',
-                dataType:   "json",
-                url:        form.attr("action"),
-                data:       form.serialize()+"&methodId="+method_id+"&cartHash="+this.cartHash,
-                success:    function (response, textStatus, jqXHR) {
-                    if ( response.result == 'success' ) {
+                dataType:   'json',
+                url:        form.attr('action'),
+                data:       form.serialize() + '&methodId=' + method_id + '&cartHash=' + this.cartHash,
+                success: function (response) {
+                    if ( response.result === 'success' ) {
                             self.payment_methods[method_id].handler.submit();
                             return;
-                    } else if (response.result =='redirect') {
-                        location.replace(response.redirect);
+                    } else if (response.result ==='redirect') {
+                        window.location.href = response.redirect;
                         return;
-                    } else if ( response.result == 'failure' ) {
-                        if (response.reload == 'true' ) {
+                    } else if ( response.result === 'failure' ) {
+                        if (response.reload === 'true' ) {
                             window.location.href = window.location.href;
                             return;
                         } else if (response.redirect) {
-                            location.replace(response.redirect);
+                            window.location.href = response.redirect;
                             return;
                         }
                     }
@@ -192,12 +192,12 @@ jQuery(function ($) {
                     self.remove_existing_errors();
                     self.show_new_errors(trustpaymentsMsgJsonError);
                 },
-                error:      function (jqXHR, textStatus, errorThrown) {
+                error: function (jqXHR, textStatus, errorThrown) {
                     $('#payment-confirmation button').attr('disabled', false);
                     self.hide_loading_spinner();
                     self.remove_existing_errors();
                     self.show_new_errors(trustpaymentsMsgJsonError);
-                },
+                }
             });
             
             
@@ -236,7 +236,7 @@ jQuery(function ($) {
             $("#checkout-payment-step").css({position:  ""});
             $("#trustpayments-blocker").remove();
         }
-    }
+    };
     
     trustpayments_checkout.init();
     
