@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Trust Payments Prestashop
  *
@@ -9,16 +10,18 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache Software License (ASL 2.0)
  */
 
-if (! defined('_PS_VERSION_')) {
+if (!defined('_PS_VERSION_')) {
     exit();
 }
+
+use PrestaShop\PrestaShop\Core\Domain\Order\CancellationActionType;
 
 require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'trustpayments_autoloader.php');
 require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'trustpayments-sdk' . DIRECTORY_SEPARATOR .
     'autoload.php');
 class TrustPayments extends PaymentModule
 {
-    
+
     /**
      * Class constructor
      */
@@ -29,7 +32,7 @@ class TrustPayments extends PaymentModule
         $this->author = 'Customweb GmbH';
         $this->bootstrap = true;
         $this->need_instance = 0;
-        $this->version = '1.2.8';
+        $this->version = '1.2.9';
         $this->displayName = 'Trust Payments';
         $this->description = $this->l('This PrestaShop module enables to process payments with %s.');
         $this->description = sprintf($this->description, 'Trust Payments');
@@ -43,12 +46,12 @@ class TrustPayments extends PaymentModule
             $this->l('Are you sure you want to uninstall the %s module?', 'abstractmodule'),
             'Trust Payments'
         );
-        
+
         // Remove Fee Item
         if (isset($this->context->cart) && Validate::isLoadedObject($this->context->cart)) {
             TrustPaymentsFeehelper::removeFeeSurchargeProductsFromCart($this->context->cart);
         }
-        if (! empty($this->context->cookie->tru_error)) {
+        if (!empty($this->context->cookie->tru_error)) {
             $errors = $this->context->cookie->tru_error;
             if (is_string($errors)) {
                 $this->context->controller->errors[] = $errors;
@@ -61,38 +64,38 @@ class TrustPayments extends PaymentModule
             $this->context->cookie->tru_error = null;
         }
     }
-    
+
     public function addError($error)
     {
         $this->_errors[] = $error;
     }
-    
+
     public function getContext()
     {
         return $this->context;
     }
-    
+
     public function getTable()
     {
         return $this->table;
     }
-    
+
     public function getIdentifier()
     {
         return $this->identifier;
     }
-    
+
     public function install()
     {
-        if (! TrustPaymentsBasemodule::checkRequirements($this)) {
+        if (!TrustPaymentsBasemodule::checkRequirements($this)) {
             return false;
         }
-        if (! parent::install()) {
+        if (!parent::install()) {
             return false;
         }
         return TrustPaymentsBasemodule::install($this);
     }
-    
+
     public function uninstall()
     {
         return parent::uninstall() && TrustPaymentsBasemodule::uninstall($this);
@@ -112,11 +115,11 @@ class TrustPayments extends PaymentModule
                 'name' => 'Trust Payments ' . $this->l('Payment Methods')
             ),
             'AdminTrustPaymentsDocuments' => array(
-                'parentId' => - 1, // No Tab in navigation
+                'parentId' => -1, // No Tab in navigation
                 'name' => 'Trust Payments ' . $this->l('Documents')
             ),
             'AdminTrustPaymentsOrder' => array(
-                'parentId' => - 1, // No Tab in navigation
+                'parentId' => -1, // No Tab in navigation
                 'name' => 'Trust Payments ' . $this->l('Order Management')
             ),
             'AdminTrustPaymentsCronJobs' => array(
@@ -130,12 +133,12 @@ class TrustPayments extends PaymentModule
     {
         return TrustPaymentsBasemodule::installConfigurationValues();
     }
-    
+
     public function uninstallConfigurationValues()
     {
         return TrustPaymentsBasemodule::uninstallConfigurationValues();
     }
-    
+
     public function getContent()
     {
         $output = TrustPaymentsBasemodule::getMailHookActiveWarning($this);
@@ -172,7 +175,7 @@ class TrustPayments extends PaymentModule
             TrustPaymentsBasemodule::getOrderStatusConfigValues($this)
         );
     }
-    
+
     public function getConfigurationKeys()
     {
         return TrustPaymentsBasemodule::getConfigurationKeys();
@@ -180,10 +183,10 @@ class TrustPayments extends PaymentModule
 
     public function hookPaymentOptions($params)
     {
-        if (! $this->active) {
+        if (!$this->active) {
             return;
         }
-        if (! isset($params['cart']) || ! ($params['cart'] instanceof Cart)) {
+        if (!isset($params['cart']) || !($params['cart'] instanceof Cart)) {
             return;
         }
         $cart = $params['cart'];
@@ -224,13 +227,13 @@ class TrustPayments extends PaymentModule
                 $possible->getId(),
                 $shopId
             );
-            if (! $methodConfiguration->isActive()) {
+            if (!$methodConfiguration->isActive()) {
                 continue;
             }
             $methods[] = $methodConfiguration;
         }
         $result = array();
-        
+
         $this->context->smarty->registerPlugin(
             'function',
             'trustpayments_clean_html',
@@ -239,7 +242,7 @@ class TrustPayments extends PaymentModule
                 'cleanHtml'
             )
         );
-        
+
         foreach (TrustPaymentsHelper::sortMethodConfiguration($methods) as $methodConfiguration) {
             $parameters = TrustPaymentsBasemodule::getParametersFromMethodConfiguration($this, $methodConfiguration, $cart, $shopId, $language);
             $parameters['priceDisplayTax'] = Group::getPriceDisplayMethod(Group::getCurrent()->id);
@@ -335,7 +338,7 @@ class TrustPayments extends PaymentModule
             );
         }
     }
-    
+
     public function hookDisplayTop($params)
     {
         return  TrustPaymentsBasemodule::hookDisplayTop($this, $params);
@@ -356,7 +359,7 @@ class TrustPayments extends PaymentModule
     {
         return $backendController->access('edit');
     }
-    
+
     public function hookTrustPaymentsCron($params)
     {
         return TrustPaymentsBasemodule::hookTrustPaymentsCron($params);
@@ -373,17 +376,17 @@ class TrustPayments extends PaymentModule
         $result .= TrustPaymentsBasemodule::getCronJobItem($this);
         return $result;
     }
-    
+
     public function hookTrustPaymentsSettingsChanged($params)
     {
         return TrustPaymentsBasemodule::hookTrustPaymentsSettingsChanged($this, $params);
     }
-    
+
     public function hookActionMailSend($data)
     {
         return TrustPaymentsBasemodule::hookActionMailSend($this, $data);
     }
-    
+
     public function validateOrder(
         $id_cart,
         $id_order_state,
@@ -398,7 +401,7 @@ class TrustPayments extends PaymentModule
     ) {
         TrustPaymentsBasemodule::validateOrder($this, $id_cart, $id_order_state, $amount_paid, $payment_method, $message, $extra_vars, $currency_special, $dont_touch_amount, $secure_key, $shop);
     }
-    
+
     public function validateOrderParent(
         $id_cart,
         $id_order_state,
@@ -413,12 +416,12 @@ class TrustPayments extends PaymentModule
     ) {
         parent::validateOrder($id_cart, $id_order_state, $amount_paid, $payment_method, $message, $extra_vars, $currency_special, $dont_touch_amount, $secure_key, $shop);
     }
-    
+
     public function hookDisplayOrderDetail($params)
     {
         return TrustPaymentsBasemodule::hookDisplayOrderDetail($this, $params);
     }
-    
+
     public function hookDisplayBackOfficeHeader($params)
     {
         TrustPaymentsBasemodule::hookDisplayBackOfficeHeader($this, $params);
@@ -433,17 +436,17 @@ class TrustPayments extends PaymentModule
     {
         return TrustPaymentsBasemodule::hookDisplayAdminOrderTabOrder($this, $params);
     }
-    
+
     public function hookDisplayAdminOrderMain($params)
     {
         return TrustPaymentsBasemodule::hookDisplayAdminOrderMain($this, $params);
     }
-    
+
     public function hookDisplayAdminOrderTabLink($params)
     {
         return TrustPaymentsBasemodule::hookDisplayAdminOrderTabLink($this, $params);
     }
-    
+
     public function hookDisplayAdminOrderContentOrder($params)
     {
         return TrustPaymentsBasemodule::hookDisplayAdminOrderContentOrder($this, $params);
@@ -453,29 +456,68 @@ class TrustPayments extends PaymentModule
     {
         return TrustPaymentsBasemodule::hookDisplayAdminOrderTabContent($this, $params);
     }
-    
+
     public function hookDisplayAdminOrder($params)
     {
         return TrustPaymentsBasemodule::hookDisplayAdminOrder($this, $params);
     }
-    
+
     public function hookActionAdminOrdersControllerBefore($params)
     {
         return TrustPaymentsBasemodule::hookActionAdminOrdersControllerBefore($this, $params);
     }
-    
+
     public function hookActionObjectOrderPaymentAddBefore($params)
     {
         TrustPaymentsBasemodule::hookActionObjectOrderPaymentAddBefore($this, $params);
     }
-    
+
     public function hookActionOrderEdited($params)
     {
         TrustPaymentsBasemodule::hookActionOrderEdited($this, $params);
     }
-    
+
     public function hookActionProductCancel($params)
     {
-        TrustPaymentsBasemodule::hookActionProductCancel($this, $params);
+        // check version too here to only run on > 1.7.7 for now
+        // as there is some overlap in functionality with some previous versions 1.7+
+        if ($params['action'] === CancellationActionType::PARTIAL_REFUND && version_compare(_PS_VERSION_, '1.7.7', '>=')) {
+            $idOrder = Tools::getValue('id_order');
+            $refundParameters = Tools::getAllValues();
+
+            $order = $params['order'];
+
+            if (!Validate::isLoadedObject($order) || $order->module != $this->name) {
+                return;
+            }
+
+            $strategy = TrustPaymentsBackendStrategyprovider::getStrategy();
+            if ($strategy->isVoucherOnlyTrustPayments($order, $refundParameters)) {
+                return;
+            }
+
+            // need to manually set this here as it's expected downstream
+            $refundParameters['partialRefund'] = true;
+
+            $backendController = Context::getContext()->controller;
+            $editAccess = 0;
+
+            $access = Profile::getProfileAccess(
+                Context::getContext()->employee->id_profile,
+                (int) Tab::getIdFromClassName('AdminOrders')
+            );
+            $editAccess = isset($access['edit']) && $access['edit'] == 1;
+
+            if ($editAccess) {
+                try {
+                    $parsedData = $strategy->simplifiedRefund($refundParameters);
+                    TrustPaymentsServiceRefund::instance()->executeRefund($order, $parsedData);
+                } catch (Exception $e) {
+                    $backendController->errors[] = TrustPaymentsHelper::cleanExceptionMessage($e->getMessage());
+                }
+            } else {
+                $backendController->errors[] = Tools::displayError('You do not have permission to delete this.');
+            }
+        }
     }
 }
