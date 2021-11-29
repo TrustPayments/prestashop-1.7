@@ -32,7 +32,7 @@ class TrustPayments extends PaymentModule
         $this->author = 'Customweb GmbH';
         $this->bootstrap = true;
         $this->need_instance = 0;
-        $this->version = '1.2.11';
+        $this->version = '1.2.12';
         $this->displayName = 'Trust Payments';
         $this->description = $this->l('This PrestaShop module enables to process payments with %s.');
         $this->description = sprintf($this->description, 'Trust Payments');
@@ -475,6 +475,16 @@ class TrustPayments extends PaymentModule
     public function hookActionOrderEdited($params)
     {
         TrustPaymentsBasemodule::hookActionOrderEdited($this, $params);
+    }
+
+    public function hookActionOrderGridDefinitionModifier($params)
+    {
+        TrustPaymentsBasemodule::hookActionOrderGridDefinitionModifier($this, $params);
+    }
+
+    public function hookActionOrderGridQueryBuilderModifier($params)
+    {
+        TrustPaymentsBasemodule::hookActionOrderGridQueryBuilderModifier($this, $params);
     }
 
     public function hookActionProductCancel($params)
