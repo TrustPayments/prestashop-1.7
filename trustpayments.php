@@ -32,7 +32,7 @@ class TrustPayments extends PaymentModule
         $this->author = 'Customweb GmbH';
         $this->bootstrap = true;
         $this->need_instance = 0;
-        $this->version = '1.2.26';
+        $this->version = '1.2.27';
         $this->displayName = 'Trust Payments';
         $this->description = $this->l('This PrestaShop module enables to process payments with %s.');
         $this->description = sprintf($this->description, 'Trust Payments');
@@ -145,6 +145,7 @@ class TrustPayments extends PaymentModule
         $output .= TrustPaymentsBasemodule::handleSaveAll($this);
         $output .= TrustPaymentsBasemodule::handleSaveApplication($this);
         $output .= TrustPaymentsBasemodule::handleSaveEmail($this);
+        $output .= TrustPaymentsBasemodule::handleSaveCartRecreation($this);
         $output .= TrustPaymentsBasemodule::handleSaveFeeItem($this);
         $output .= TrustPaymentsBasemodule::handleSaveDownload($this);
         $output .= TrustPaymentsBasemodule::handleSaveSpaceViewId($this);
@@ -157,6 +158,7 @@ class TrustPayments extends PaymentModule
     {
         return array(
             TrustPaymentsBasemodule::getEmailForm($this),
+            TrustPaymentsBasemodule::getCartRecreationForm($this),
             TrustPaymentsBasemodule::getFeeForm($this),
             TrustPaymentsBasemodule::getDocumentForm($this),
             TrustPaymentsBasemodule::getSpaceViewIdForm($this),
@@ -169,6 +171,7 @@ class TrustPayments extends PaymentModule
         return array_merge(
             TrustPaymentsBasemodule::getApplicationConfigValues($this),
             TrustPaymentsBasemodule::getEmailConfigValues($this),
+            TrustPaymentsBasemodule::getCartRecreationConfigValues($this),
             TrustPaymentsBasemodule::getFeeItemConfigValues($this),
             TrustPaymentsBasemodule::getDownloadConfigValues($this),
             TrustPaymentsBasemodule::getSpaceViewIdConfigValues($this),
